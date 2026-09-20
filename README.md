@@ -1,24 +1,31 @@
 # Metered Locker Demo
 
-A public proof-of-concept for a **weight-aware, usage-based smart storage locker**.
+A public proof-of-concept for a **weight-aware, usage-based smart storage locker platform**.
 
 The idea: a customer authenticates, deposits an item, storage time is metered, and the session automatically closes after authorized retrieval when the locker returns to its empty-weight threshold.
 
 > This repository is intentionally a demonstration implementation. Production hardware integration, billing logic, security controls, anti-tamper rules, and operational systems are maintained separately.
 
-## Phase 1 — simulated workflow
+## Current public demo — Phase 2
 
-This version demonstrates:
+The demo now includes:
 
+- Multi-locker operator dashboard
+- Locker selection and individual compartment states
+- Simulated access-code authentication
 - Locker states: `AVAILABLE → OPEN → STORED → RETRIEVAL → COMPLETE`
 - Simulated load-cell readings
 - Empty-weight threshold logic
-- Running storage timer
+- Running storage timers
 - Example metered pricing
+- Fleet health summary
+- Fault states for sensor offline and overload conditions
+- Maintenance reset simulation
 - Event / audit trail
+- Session history
 - Automatic session finalization after item removal
 - Receipt generation
-- Responsive UI
+- Responsive desktop/mobile UI
 
 No real payments are processed and no physical locker is controlled by this repository.
 
@@ -35,52 +42,72 @@ Production build:
 npm run build
 ```
 
-## Demo pricing
+## Demo controls
 
-For the public simulation:
+Use this access code in the public simulation:
+
+```text
+2468
+```
+
+Example public-demo rules:
 
 - $2.00 includes the first hour
 - $0.50 per additional 30 minutes
 - Empty threshold: ≤ 40 g
+- Demo overload threshold: > 25 kg
 
-These values exist only to demonstrate the metering workflow.
+These values exist only to demonstrate the workflow and state transitions.
 
-## Planned public-demo milestones
+## Phase history
 
-**Phase 2**
-- Multi-locker dashboard
-- Simulated access codes
+### Phase 1
+- Single-locker workflow
+- Simulated load-cell readings
+- Metered timer and charge
+- Audit events
+- Receipt generation
+
+### Phase 2
+- Multi-locker fleet
+- Access-code simulation
 - Session history
-- Fault states such as overload, unstable weight, and sensor offline
+- Fleet status summary
+- Sensor-offline state
+- Overload state
+- Operator fault simulation
+- Maintenance reset workflow
 
-**Phase 3**
+## Planned public-demo Phase 3
+
 - Mock REST API
 - Persisted demo sessions
-- Operator view
+- Dedicated operator view
 - Basic analytics
+- Additional simulated device telemetry
 
-Physical sensor integration and production billing remain outside the public demo.
+Physical sensor integration, production authentication, real payment processing, deployment infrastructure, and production anti-tamper logic remain outside the public demo.
 
 ## Concept architecture
 
 ```text
-Customer
-   ↓
-Access / locker state
-   ↓
-Weight signal
-   ↓
+Customer / operator
+        ↓
+Access + locker state
+        ↓
+Weight signal / simulated telemetry
+        ↓
 Session engine
-   ↓
+        ↓
 Metered charge
-   ↓
-Audit event + receipt
+        ↓
+Audit event + session history + receipt
 ```
 
 ## Why this exists
 
-The project explores a simple systems question:
+The project explores a systems question:
 
 **Can the physical state of a locker help drive the software state of a storage transaction?**
 
-The demo uses weight as one signal for occupancy and session completion while accounting for real-world sensor drift through a configurable empty threshold.
+The public demo uses weight as one occupancy signal while accounting for real-world sensor drift and possible sensor failure through explicit thresholds and fault states.
