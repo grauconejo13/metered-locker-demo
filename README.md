@@ -6,9 +6,11 @@ The idea: a customer authenticates, deposits an item, storage time is metered, a
 
 > This repository is intentionally a demonstration implementation. Production hardware integration, billing logic, security controls, anti-tamper rules, and operational systems are maintained separately.
 
-## Current public demo — Phase 2
+## Current public demo — Phase 3
 
-The demo now includes:
+Phase 3 keeps the project public-safe while making it behave more like a complete system demo.
+
+It now includes:
 
 - Multi-locker operator dashboard
 - Locker selection and individual compartment states
@@ -19,12 +21,18 @@ The demo now includes:
 - Running storage timers
 - Example metered pricing
 - Fleet health summary
-- Fault states for sensor offline and overload conditions
+- Sensor-offline and overload fault states
 - Maintenance reset simulation
 - Event / audit trail
 - Session history
 - Automatic session finalization after item removal
 - Receipt generation
+- Browser-local persistence with `localStorage`
+- Asynchronous mock service layer
+- Mock API contract view
+- Operator analytics
+- Simulated telemetry for signal, battery, and device temperature
+- Reset-to-seed demo data
 - Responsive desktop/mobile UI
 
 No real payments are processed and no physical locker is controlled by this repository.
@@ -78,15 +86,27 @@ These values exist only to demonstrate the workflow and state transitions.
 - Operator fault simulation
 - Maintenance reset workflow
 
-## Planned public-demo Phase 3
+### Phase 3
+- Mock asynchronous service layer
+- Browser-local persisted demo state
+- Seed/reset workflow
+- Operator analytics
+- Simulated telemetry
+- Public mock API contract view
 
-- Mock REST API
-- Persisted demo sessions
-- Dedicated operator view
-- Basic analytics
-- Additional simulated device telemetry
+## Mock API shape
 
-Physical sensor integration, production authentication, real payment processing, deployment infrastructure, and production anti-tamper logic remain outside the public demo.
+The public demo documents an API-shaped contract without exposing a production backend:
+
+```text
+GET   /api/lockers
+GET   /api/sessions
+POST  /api/access/verify
+PATCH /api/lockers/:id/state
+GET   /api/analytics
+```
+
+The current implementation is intentionally local and simulated.
 
 ## Concept architecture
 
@@ -95,14 +115,32 @@ Customer / operator
         ↓
 Access + locker state
         ↓
-Weight signal / simulated telemetry
+Weight signal / mock telemetry
+        ↓
+Mock service layer
         ↓
 Session engine
         ↓
 Metered charge
         ↓
-Audit event + session history + receipt
+Audit event + persisted history + analytics + receipt
 ```
+
+## Public/private boundary
+
+This public repository demonstrates product behavior and front-end architecture.
+
+The following remain outside the public demo:
+
+- Physical ESP32 / sensor communication
+- Real RFID or identity integration
+- Real payment processing
+- Production authentication and authorization
+- Anti-tamper implementation
+- Production database design
+- Deployment infrastructure
+- Operational security rules
+- Production billing rules
 
 ## Why this exists
 
@@ -110,4 +148,4 @@ The project explores a systems question:
 
 **Can the physical state of a locker help drive the software state of a storage transaction?**
 
-The public demo uses weight as one occupancy signal while accounting for real-world sensor drift and possible sensor failure through explicit thresholds and fault states.
+The public demo uses weight as one occupancy signal while accounting for sensor drift, device faults, telemetry, persistence, and session state — without exposing a production implementation.
